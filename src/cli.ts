@@ -4,18 +4,18 @@ import { readFile } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fromWikiHarness } from "./wiki-harness";
+import { queryGraph, type GRLNodeMode } from "./graph";
 import { validateContract } from "./validation";
 
 async function json(path: string) { return JSON.parse(await readFile(resolve(path), "utf8")); }
 async function main() {
   const [command, path, ...rest] = process.argv.slice(2);
-  if (!command || command === "help" || command === "--help") { console.log("grl validate <file> | inspect <file> --node <id> | convert wikiharness <input> --out <file> | serve <file> --port 5190"); return; }
+  if (!command || command === "help" || command === "--help") { console.log("grl validate <file> | inspect <file> --node <id> [--mode features|evidence|relations|stages] | convert wikiharness <input> --out <file> | serve <file> --port 5190"); return; }
   if (command === "validate") { const data = validateContract(await json(path)); console.log(`OK ${data.dataset.id}: ${data.features.length} features, ${data.evidence.length} evidence, ${data.circuits.length} circuits, ${data.relations.length} relations`); return; }
   if (command === "inspect") {
-    const data = validateContract(await json(path)); const nodeId = rest[rest.indexOf("--node") + 1];
-    const node = data.features.find((item) => item.id === nodeId) ?? data.evidence.find((item) => item.id === nodeId);
-    if (!node) throw new Error(`node not found: ${nodeId}`);
-    console.log(JSON.stringify({ node, circuits: data.circuits.filter((item) => item.sourceFeatureId === nodeId || item.targetFeatureId === nodeId), relations: data.relations.filter((item) => item.sourceNodeId === nodeId || item.targetNodeId === nodeId) }, null, 2)); return;
+    const data = validateContract(await json(path)); const nodeId = rest[rest.indexOf("--node") + 1]; const modeIndex = rest.indexOf("--mode"); const mode = (modeIndex >= 0 ? rest[modeIndex + 1] : "features") as GRLNodeMode;
+    const result = queryGraph(data, nodeId, mode); if (!result) throw new Error(`node not found in ${mode} graph: ${nodeId}`);
+    console.log(JSON.stringify(result, null, 2)); return;
   }
   if (command === "convert" && path === "wikiharness") {
     const input = rest[0]; const output = rest[rest.indexOf("--out") + 1]; if (!input || !output) throw new Error("convert requires input and --out");

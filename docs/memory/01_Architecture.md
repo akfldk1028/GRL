@@ -13,4 +13,4 @@ WikiDocs / paper DB / code analyzer / another agent DB
                                   convert/serve
 ```
 
-The core owns only the portable contract, semantic validation, graph projection, and rendering. Producers remain in their source repositories. Adapters translate external snapshots without importing their source code. The web app is local-first and does not upload contracts.
+The core owns the portable contract, semantic validation, UI-independent node/edge projection, filtering, neighborhood queries, and adapters. React renders the projected graph but does not own graph semantics. Producers remain in their source repositories. The web app is local-first and does not upload contracts.

@@ -17,6 +17,16 @@ import "grl/styles.css";
 <GraphLab contract={validateContract(data)} />
 ```
 
+The graph engine is UI-independent:
+
+```ts
+import { projectGraph, filterGraphEdges, queryGraph } from "grl";
+
+const graph = projectGraph(contract, "features");
+const dense = filterGraphEdges(graph.edges, { mode: "evidence_dense" });
+const neighborhood = queryGraph(contract, "feature:claim");
+```
+
 ```bash
 grl validate contract.json
 grl inspect contract.json --node feature:claim

@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://github.com/akfldk1028/GRL/schema/grl-v1.schema.json", "title": "GRL Contract v1", "type": "object",
+  "required": ["schemaVersion", "dataset", "features", "evidence", "circuits", "relations"],
+  "properties": { "schemaVersion": { "const": "grl/v1" }, "dataset": { "type": "object", "required": ["id", "title"] }, "features": { "type": "array" }, "evidence": { "type": "array" }, "circuits": { "type": "array" }, "relations": { "type": "array" }, "stages": { "type": "array" }, "queryHints": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false
+}

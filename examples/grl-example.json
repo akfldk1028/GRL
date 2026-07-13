@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "grl/v1",
+  "dataset": { "id": "example", "title": "Agent Knowledge Pipeline", "description": "Portable GRL v1 example" },
+  "stages": [{ "id": "source_intake", "label": "Source Intake" }, { "id": "evidence_anchor", "label": "Evidence Anchor" }, { "id": "concept_model", "label": "Concept Model" }, { "id": "agent_action", "label": "Agent Action" }],
+  "features": [
+    { "id": "feature:url", "label": "URL source", "kind": "source", "confidence": 1, "pipelineStage": "source_intake", "evidenceDensity": 1 },
+    { "id": "feature:claim", "label": "Evidence-backed claim", "kind": "concept", "confidence": 0.92, "pipelineStage": "evidence_anchor", "evidenceDensity": 9 },
+    { "id": "feature:model", "label": "Knowledge model", "kind": "concept", "confidence": 0.88, "pipelineStage": "concept_model", "evidenceDensity": 12 },
+    { "id": "feature:query", "label": "Agent query", "kind": "action", "confidence": 0.9, "pipelineStage": "agent_action", "evidenceDensity": 4 }
+  ],
+  "evidence": [{ "id": "evidence:claim", "featureId": "feature:claim", "sourcePath": "source.md", "excerpt": "A source excerpt anchors this claim.", "evidenceType": "excerpt", "confidence": 0.95 }],
+  "circuits": [
+    { "id": "circuit:intake-claim", "sourceFeatureId": "feature:url", "targetFeatureId": "feature:claim", "type": "supports", "confidence": 0.9, "evidenceDensity": 9, "edgeWeight": 1.3, "evidenceIds": ["evidence:claim"] },
+    { "id": "circuit:claim-model", "sourceFeatureId": "feature:claim", "targetFeatureId": "feature:model", "type": "links_to", "confidence": 0.88, "evidenceDensity": 12, "edgeWeight": 1.6 },
+    { "id": "circuit:model-query", "sourceFeatureId": "feature:model", "targetFeatureId": "feature:query", "type": "activates", "confidence": 0.84, "evidenceDensity": 4, "edgeWeight": 1.1 }
+  ],
+  "relations": [{ "id": "relation:url-query", "sourceNodeId": "feature:url", "targetNodeId": "feature:query", "type": "enables", "confidence": 0.8, "evidenceIds": ["evidence:claim"] }],
+  "queryHints": ["Find high-density evidence bridges", "Trace source intake to agent action"]
+}
